@@ -1,0 +1,21 @@
+{
+  "team": "unknown",
+  "phase": "private",
+  "headline": 77.56,
+  "sub": {
+    "correct": 0.5588,
+    "quality": 0.7134,
+    "error": 1.0,
+    "latency": 0.0,
+    "cost": 0.0,
+    "drift": 0.3466,
+    "prompt": 0.7626
+  },
+  "diag_f1": 0.973,
+  "n": 80,
+  "n_correct": 37,
+  "judge_mode": "offline",
+  "weights_hash": "e81a8ed58d93",
+  "key_hash": "7e3905b75db0",
+  "sig": "efbafb331f710e7fb3aa667e94fd9f9c57fd768bb27c80580be1e0a8d4546625"
+}

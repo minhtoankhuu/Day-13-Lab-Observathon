@@ -1,8 +1,8 @@
 {
   "provider": "openai",
-  "model": "google/gemini-2.5-flash",
+  "model": "gemini-2.5-flash",
   "model_price_tier": "economy",
-  "max_steps": 6,
+  "max_steps": 12,
   "loop_guard": true,
   "temperature": 0.2,
   "context_size": 4,
@@ -11,8 +11,8 @@
   "max_completion_tokens": 2000,
   "retry": {
     "enabled": true,
-    "max_attempts": 3,
-    "backoff_ms": 100
+    "max_attempts": 10,
+    "backoff_ms": 2000
   },
   "cache": {
     "enabled": true
