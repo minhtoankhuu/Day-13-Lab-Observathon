@@ -15,12 +15,28 @@ def mitigate(call_next, question, config, context):
         question
     )
     
-    # 2. Gọi Agent với cơ chế Retry (nếu bị lỗi nội bộ thì thử lại)
-    max_retries = 2
+    # 2. Custom Cache (Tối ưu Latency & Cost bằng code thay vì Config)
+    cache_dict = context.get("cache")
+    cache_lock = context.get("cache_lock")
+    
+    if cache_dict is not None and cache_lock is not None:
+        with cache_lock:
+            if safe_question in cache_dict:
+                cached_result = cache_dict[safe_question].copy()
+                cached_result["status"] = "ok (cached)"
+                return cached_result
+                
+    # 3. Gọi Agent với cơ chế Retry (bắt các lỗi ngẫu nhiên do tool_error_rate)
+    max_retries = 3
     for attempt in range(max_retries):
         result = call_next(safe_question, config)
         if result.get("status") in ["ok", "max_steps", "no_action"]:
             break
+            
+    # Lưu vào Cache nếu thành công
+    if result.get("status") == "ok" and cache_dict is not None and cache_lock is not None:
+        with cache_lock:
+            cache_dict[safe_question] = result
             
     # 3. Redact PII: Che số điện thoại, email trước khi trả cho người dùng
     answer = result.get("answer")
