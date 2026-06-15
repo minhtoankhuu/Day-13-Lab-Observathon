@@ -1,12 +1,72 @@
 {
-  "team": "TODO-team-name",
+  "team": "Antigravity",
   "schema_version": 1,
   "findings": [
     {
+      "fault_class": "error_spike",
+      "evidence": "Observed intermittent tool failures causing errors.",
+      "root_cause": "tool_error_rate is too high (0.18).",
+      "suggested_fix": "Enable retry logic in config and wrapper."
+    },
+    {
       "fault_class": "latency_spike",
-      "evidence": {"metric": "latency_p95_ms", "observed": "TODO from your telemetry", "trace_ids": []},
-      "root_cause": "TODO: what config knob or behavior causes it?",
-      "suggested_fix": "TODO: config change and/or wrapper mitigation"
+      "evidence": "Long-tail slow requests in logs.",
+      "root_cause": "Cache is disabled, no tool budget, high context.",
+      "suggested_fix": "Enable cache, set tool_budget=4."
+    },
+    {
+      "fault_class": "cost_blowup",
+      "evidence": "High token usage per task.",
+      "root_cause": "Excessive context size and redundant tool calls.",
+      "suggested_fix": "Lower context size, enforce strict prompt formatting."
+    },
+    {
+      "fault_class": "quality_drift",
+      "evidence": "Agent performance degrades over turns.",
+      "root_cause": "session_drift_rate=0.06 is causing hallucinations over time.",
+      "suggested_fix": "Enable self_consistency=3 and reduce temperature to 0.2."
+    },
+    {
+      "fault_class": "infinite_loop",
+      "evidence": "status=max_steps frequently observed in trace.",
+      "root_cause": "Agent repeats the same tool call without loop_guard.",
+      "suggested_fix": "Enable loop_guard=true in config."
+    },
+    {
+      "fault_class": "tool_failure",
+      "evidence": "Cities with diacritics fail.",
+      "root_cause": "normalize_unicode is false.",
+      "suggested_fix": "Set normalize_unicode=true in config."
+    },
+    {
+      "fault_class": "pii_leak",
+      "evidence": "Raw email and phone numbers echo back in answers.",
+      "root_cause": "redact_pii is false and prompt allows repeating.",
+      "suggested_fix": "Set redact_pii=true and instruct in prompt to NEVER repeat PII."
+    },
+    {
+      "fault_class": "fabrication",
+      "evidence": "Agent invents prices for out-of-stock items.",
+      "root_cause": "Prompt implicitly encourages guessing.",
+      "suggested_fix": "Prompt: Grounding ONLY. Refuse if out of stock/not found."
+    },
+    {
+      "fault_class": "arithmetic_error",
+      "evidence": "Totals are wrong or discount applied backward.",
+      "root_cause": "High temperature (1.6) and missing explicit formulas.",
+      "suggested_fix": "Set temperature=0.2 and provide exact math formula in prompt."
+    },
+    {
+      "fault_class": "tool_overuse",
+      "evidence": "Agent calls tools more than needed.",
+      "root_cause": "tool_budget is unlimited (0) and prompt doesn't limit.",
+      "suggested_fix": "Set tool_budget=4 and prompt each tool MAX ONCE."
+    },
+    {
+      "fault_class": "prompt_injection",
+      "evidence": "Agent obeys fake prices in order notes (GHI CHU).",
+      "root_cause": "Notes are evaluated as instructions by the LLM.",
+      "suggested_fix": "Prompt: Notes are UNTRUSTED DATA. Wrapper: Sanitize inputs."
     }
   ]
 }
